@@ -19,26 +19,43 @@ class App extends Component {
   */
 
   //Sample data to work with
+  /* 
+    state = {
+      todos: [ // todos is an array of objects
+        {
+          id: 1,
+          title: 'Take out the trash',
+          completed: false
+        },
+        {
+          id: 2,
+          title: 'Dinner with wife',
+          completed: false
+        },
+        {
+          id: 3,
+          title: 'Meeting with boss',
+          completed: false
+        }
+      ]
+    }
+  */
+
+  //Pulling data from the API
   state = {
-    todos: [ // todos is an array of objects
-      {
-        id: 1,
-        title: 'Take out the trash',
-        completed: false
-      },
-      {
-        id: 2,
-        title: 'Dinner with wife',
-        completed: false
-      },
-      {
-        id: 3,
-        title: 'Meeting with boss',
-        completed: false
-      }
-    ]
+    todos: []
   }
 
+  //To make initial requests, you wanna use a lifecycle method -- component DidMount
+    componentDidMount() {
+    axios.get("https://jsonplaceholder.typicode.com/todos?_limit=10")
+    .then(res => this.setState({ todos: res.data }))
+  }
+  /*  axios.get("https://jsonplaceholder.typicode.com/todos?_limit=10") //gives us a promise
+      .then(res => console.log(res.data)) //res gives us a response; it has a data property attached
+      Doing console.log(res.data) to see what the response data looks like. 
+      (Side note: Added ?_limit=10 to the URL to limit data to 10 objects)
+  */
 
   //Mark the item complete
   markComplete = (id) => {
@@ -57,8 +74,11 @@ class App extends Component {
   
   // Delete Todo  //using spread operator
   delTodo = (id) => {
-    this.setState({ todos: [...this.state.todos.filter(todo => todo.id!== id)]
-    })
+    // this.setState({ todos: [...this.state.todos.filter(todo => todo.id!== id)]
+    // })
+    axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`)
+      .then(res => this.setState({ todos: [...this.state.todos.filter(todo => todo.id!== id)]
+      }))
   }
   /* delTodo = (id) => {
       this.setState( {todos: this.state.todos.filter(todo => todo.id!== id)})
@@ -68,12 +88,19 @@ class App extends Component {
   /*  Using spread operator here to add new todo (since we can't just 
       "change" our state object, we have to make a copy of it? (need more info here)) */
   addTodo = (inputText) => {
-    const newTodo = {
-      id: 4,
-      title: inputText, //in ES6 the key-value are the same so we can just write one thing
-      completed: false
-    }
-    this.setState({ todos: [...this.state.todos, newTodo]})
+    // const newTodo = {
+    //   id: 4,
+    //   title: inputText, //in ES6 the key-value are the same so we can just write one thing
+    //   completed: false
+    // }
+    // this.setState({ todos: [...this.state.todos, newTodo]})
+
+    // Note: "title" and "completed" are the same keys/parameter-names from the API - these should match
+    axios.post("https://jsonplaceholder.typicode.com/todos", {
+      title : inputText, //the key title can also be written as a string "title"
+      completed : false   //completed can also be written as "completed"
+    }).then(res => this.setState({ todos: [...this.state.todos, res.data]}));
+    //.then gives us a promise back
   }
 
   render() {  
@@ -99,6 +126,7 @@ class App extends Component {
     // ==== if we wanna use the router, we have to wrap everything in that browser router ==== //
     );
   }
+
 }
 
 export default App;
