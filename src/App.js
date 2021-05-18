@@ -85,8 +85,6 @@ class App extends Component {
   } */
 
   // Add Todo 
-  /*  Using spread operator here to add new todo (since we can't just 
-      "change" our state object, we have to make a copy of it? (need more info here)) */
   addTodo = (inputText) => {
     // const newTodo = {
     //   id: 4,
@@ -95,6 +93,8 @@ class App extends Component {
     // }
     // this.setState({ todos: [...this.state.todos, newTodo]})
 
+    /* Using SPREAD OPERATOR here to add new todo (since we can't just 
+      "change" our state object, we have to make a copy of it? (need more info here)) */
     // Note: "title" and "completed" are the same keys/parameter-names from the API - these should match
     axios.post("https://jsonplaceholder.typicode.com/todos", {
       title : inputText, //the key title can also be written as a string "title"
